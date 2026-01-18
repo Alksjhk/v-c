@@ -6,8 +6,10 @@
   "scripts": {
     "dev": "bun --watch src/app.ts",
     "build": "bun build src/app.ts --outdir ./dist --target node",
+    "build:vercel": "bun run build && cd clinet && bun run build",
     "start": "bun dist/app.js",
-    "reset-db": "bun run src/scripts/reset-database.ts"
+    "reset-db": "bun run src/scripts/reset-database.ts",
+    "vercel-build": "bun run build:vercel"
   },
   "dependencies": {
     "cookie-parser": "^1.4.6",

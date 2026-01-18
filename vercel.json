@@ -1,0 +1,46 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "dist/app.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "clinet/dist/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/dist/app.js"
+    },
+    {
+      "src": "/uploads/(.*)",
+      "dest": "/dist/app.js"
+    },
+    {
+      "src": "/health",
+      "dest": "/dist/app.js"
+    },
+    {
+      "src": "/sse/(.*)",
+      "dest": "/dist/app.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/clinet/dist/$1"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "output": {
+    "exclude": [
+      "node_modules/**",
+      "src/**",
+      "clinet/src/**",
+      "clinet/node_modules/**"
+    ]
+  }
+}

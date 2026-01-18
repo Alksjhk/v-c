@@ -97,6 +97,22 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads'), {
     }
 }));
 
+// Vercel 生产环境：提供前端静态文件服务
+if (isProduction) {
+    const frontendDistPath = path.join(__dirname, '../clinet/dist');
+    app.use(express.static(frontendDistPath, {
+        maxAge: '1h',
+        etag: true,
+        lastModified: true,
+        setHeaders: (res, filepath) => {
+            // HTML文件不缓存
+            if (filepath.endsWith('.html')) {
+                res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+            }
+        }
+    }));
+}
+
 // 请求日志中间件 - 生产环境只记录错误和重要请求
 app.use((req, _res, next) => {
     if (!isProduction) {
@@ -139,7 +155,21 @@ app.get('*', (req, res) => {
         return;
     }
 
-    // 对于非 API 请求，提示前端未连接
+    // 生产环境：提供前端 index.html 以支持客户端路由
+    if (isProduction) {
+        const frontendDistPath = path.join(__dirname, '../clinet/dist/index.html');
+        res.sendFile(frontendDistPath, (err) => {
+            if (err) {
+                res.status(404).json({
+                    success: false,
+                    message: '页面不存在'
+                });
+            }
+        });
+        return;
+    }
+
+    // 开发环境：提示前端未连接
     res.status(404).json({
         success: false,
         message: '页面不存在 - 前端服务未运行或未连接到后端'
