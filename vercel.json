@@ -1,7 +1,7 @@
 {
   "version": 2,
   "buildCommand": "bun run build:vercel",
-  "outputDirectory": "dist",
+  "outputDirectory": "clinet/dist",
   "routes": [
     {
       "src": "/api/(.*)",
@@ -20,8 +20,11 @@
       "dest": "/dist/app.js"
     },
     {
+      "handle": "filesystem"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/dist/app.js"
+      "dest": "/index.html"
     }
   ],
   "env": {
