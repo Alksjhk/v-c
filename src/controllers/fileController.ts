@@ -2,23 +2,16 @@ import { Request, Response } from 'express';
 import multer, { FileFilterCallback } from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { put } from '@vercel/blob';
 
+const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV !== undefined;
 const uploadsDir = path.join(__dirname, '../../uploads');
 
-if (!fs.existsSync(uploadsDir)) {
+if (!isVercel && !fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadsDir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const ext = path.extname(file.originalname);
-        cb(null, uniqueSuffix + ext);
-    }
-});
+const storage = multer.memoryStorage();
 
 const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
     const allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -64,11 +57,26 @@ export class FileController {
             }
 
             const file = req.file;
-            
             const isImage = file.mimetype.startsWith('image/');
             const messageType = isImage ? 'image' : 'file';
 
-            const fileUrl = `/uploads/${file.filename}`;
+            let fileUrl: string;
+
+            if (isVercel) {
+                const blob = await put(file.originalname, file.buffer, {
+                    access: 'public',
+                    contentType: file.mimetype,
+                });
+                fileUrl = blob.url;
+            } else {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+                const ext = path.extname(file.originalname);
+                const filename = uniqueSuffix + ext;
+                const filePath = path.join(uploadsDir, filename);
+                
+                fs.writeFileSync(filePath, file.buffer);
+                fileUrl = `/uploads/${filename}`;
+            }
 
             res.json({
                 success: true,

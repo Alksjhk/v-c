@@ -19,22 +19,25 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// 中间件
-// 根据环境配置CORS
-const isProduction = process.env.NODE_ENV === 'production';
+// Vercel 环境检测
+const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV !== undefined;
+const isProduction = process.env.NODE_ENV === 'production' || isVercel;
 
 // 从环境变量读取CORS域名配置，支持多个域名用逗号分隔
 function getCorsOrigins(): string[] {
     if (isProduction) {
-        // 生产环境：从环境变量读取，或使用默认配置
         const corsEnv = process.env.CORS_ORIGIN;
         if (corsEnv) {
             return corsEnv.split(',').map(origin => origin.trim());
         }
-        // 默认生产环境域名（需要根据实际情况修改）
+        if (isVercel) {
+            const vercelUrl = process.env.VERCEL_URL;
+            if (vercelUrl) {
+                return [`https://${vercelUrl}`, `https://www.${vercelUrl}`];
+            }
+        }
         return ['https://yourdomain.com', 'https://www.yourdomain.com'];
     } else {
-        // 开发环境
         return ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'];
     }
 }
@@ -218,6 +221,13 @@ async function startServer() {
         console.log('正在初始化数据库...');
         await initializeDatabase();
 
+        if (isVercel) {
+            console.log('Vercel 环境检测成功');
+            console.log(`数据库: PostgreSQL (已连接)`);
+            console.log(`环境: ${process.env.VERCEL_ENV || 'production'}`);
+            return app;
+        }
+
         const server = app.listen(PORT, () => {
             if (isProduction) {
                 console.log(`生产服务器启动成功 - 端口: ${PORT}`);
@@ -230,7 +240,6 @@ async function startServer() {
             }
         });
 
-        // 优雅关闭处理
         const gracefulShutdown = async (signal: string) => {
             console.log(`收到 ${signal} 信号，正在关闭服务器...`);
             
@@ -249,7 +258,6 @@ async function startServer() {
                 process.exit(0);
             });
 
-            // 强制关闭超时（30秒后）
             setTimeout(() => {
                 console.error('无法在30秒内完全关闭，强制退出');
                 process.exit(1);
@@ -265,4 +273,10 @@ async function startServer() {
     }
 }
 
-startServer();
+if (!isVercel) {
+    startServer();
+} else {
+    startServer().then(exportedApp => {
+        module.exports = exportedApp;
+    });
+}

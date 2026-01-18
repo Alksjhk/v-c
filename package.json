@@ -12,6 +12,7 @@
     "vercel-build": "bun run build:vercel"
   },
   "dependencies": {
+    "@vercel/blob": "^0.23.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",

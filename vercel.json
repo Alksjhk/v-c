@@ -1,13 +1,11 @@
 {
   "version": 2,
+  "buildCommand": "bun run build:vercel",
+  "outputDirectory": "dist",
   "builds": [
     {
       "src": "dist/app.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "clinet/dist/**",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -29,7 +27,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/clinet/dist/$1"
+      "dest": "/dist/app.js"
     }
   ],
   "env": {
