@@ -2,10 +2,6 @@
 node_modules
 clinet/node_modules
 
-# 构建输出
-dist
-clinet/dist
-
 # 环境变量文件
 .env
 .env.local

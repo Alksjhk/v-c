@@ -2,12 +2,6 @@
   "version": 2,
   "buildCommand": "bun run build:vercel",
   "outputDirectory": "dist",
-  "builds": [
-    {
-      "src": "dist/app.js",
-      "use": "@vercel/node"
-    }
-  ],
   "routes": [
     {
       "src": "/api/(.*)",
