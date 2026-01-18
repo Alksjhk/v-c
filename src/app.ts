@@ -19,25 +19,22 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Vercel 环境检测
-const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV !== undefined;
-const isProduction = process.env.NODE_ENV === 'production' || isVercel;
+// 中间件
+// 根据环境配置CORS
+const isProduction = process.env.NODE_ENV === 'production';
 
 // 从环境变量读取CORS域名配置，支持多个域名用逗号分隔
 function getCorsOrigins(): string[] {
     if (isProduction) {
+        // 生产环境：从环境变量读取，或使用默认配置
         const corsEnv = process.env.CORS_ORIGIN;
         if (corsEnv) {
             return corsEnv.split(',').map(origin => origin.trim());
         }
-        if (isVercel) {
-            const vercelUrl = process.env.VERCEL_URL;
-            if (vercelUrl) {
-                return [`https://${vercelUrl}`, `https://www.${vercelUrl}`];
-            }
-        }
+        // 默认生产环境域名（需要根据实际情况修改）
         return ['https://yourdomain.com', 'https://www.yourdomain.com'];
     } else {
+        // 开发环境
         return ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'];
     }
 }
@@ -100,21 +97,9 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads'), {
     }
 }));
 
-// Vercel 生产环境：提供前端静态文件服务
-if (isProduction) {
-    const frontendDistPath = path.join(__dirname, '../clinet/dist');
-    app.use(express.static(frontendDistPath, {
-        maxAge: '1h',
-        etag: true,
-        lastModified: true,
-        setHeaders: (res, filepath) => {
-            // HTML文件不缓存
-            if (filepath.endsWith('.html')) {
-                res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-            }
-        }
-    }));
-}
+// 静态文件服务 - 提供前端构建文件
+const distPath = path.join(__dirname, '../client/dist');
+app.use(express.static(distPath));
 
 // 请求日志中间件 - 生产环境只记录错误和重要请求
 app.use((req, _res, next) => {
@@ -151,31 +136,20 @@ app.get('/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// 404 处理 - API 路由不存在时返回 404
+// SPA路由处理 - 在API路由之后，404处理之前
 app.get('*', (req, res) => {
+    // 如果请求的是API路径但不存在，返回404
     if (req.path.startsWith('/api/')) {
         res.status(404).json({ success: false, message: '接口不存在' });
         return;
     }
 
-    // 生产环境：提供前端 index.html 以支持客户端路由
-    if (isProduction) {
-        const frontendDistPath = path.join(__dirname, '../clinet/dist/index.html');
-        res.sendFile(frontendDistPath, (err) => {
-            if (err) {
-                res.status(404).json({
-                    success: false,
-                    message: '页面不存在'
-                });
-            }
-        });
-        return;
-    }
-
-    // 开发环境：提示前端未连接
-    res.status(404).json({
-        success: false,
-        message: '页面不存在 - 前端服务未运行或未连接到后端'
+    // 其他所有请求都返回index.html（SPA路由由前端处理）
+    const indexPath = path.join(distPath, 'index.html');
+    res.sendFile(indexPath, (err) => {
+        if (err) {
+            res.status(404).json({ success: false, message: '页面不存在' });
+        }
     });
 });
 
@@ -221,13 +195,6 @@ async function startServer() {
         console.log('正在初始化数据库...');
         await initializeDatabase();
 
-        if (isVercel) {
-            console.log('Vercel 环境检测成功');
-            console.log(`数据库: PostgreSQL (已连接)`);
-            console.log(`环境: ${process.env.VERCEL_ENV || 'production'}`);
-            return app;
-        }
-
         const server = app.listen(PORT, () => {
             if (isProduction) {
                 console.log(`生产服务器启动成功 - 端口: ${PORT}`);
@@ -240,6 +207,7 @@ async function startServer() {
             }
         });
 
+        // 优雅关闭处理
         const gracefulShutdown = async (signal: string) => {
             console.log(`收到 ${signal} 信号，正在关闭服务器...`);
             
@@ -258,6 +226,7 @@ async function startServer() {
                 process.exit(0);
             });
 
+            // 强制关闭超时（30秒后）
             setTimeout(() => {
                 console.error('无法在30秒内完全关闭，强制退出');
                 process.exit(1);
@@ -273,10 +242,4 @@ async function startServer() {
     }
 }
 
-if (!isVercel) {
-    startServer();
-} else {
-    startServer().then(exportedApp => {
-        module.exports = exportedApp;
-    });
-}
+startServer();

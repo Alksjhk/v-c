@@ -17,7 +17,7 @@ export class SSEManager {
     private reconnectAttempts = 0;
     private maxReconnectAttempts = 5;
     private reconnectDelay = 1000;
-    private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+    private reconnectTimer: NodeJS.Timeout | null = null;
 
     constructor(
         onNewMessages?: (messages: Message[]) => void,

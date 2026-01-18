@@ -10,9 +10,7 @@ export interface RateLimitError {
 
 const envConfig = getEnvConfig();
 
-// 开发环境：使用相对路径 '/api'，由 Vite 代理到后端服务器 (http://localhost:3001)
-// 生产环境：需要配置完整的后端服务器 URL (通过 VITE_API_BASE_URL 环境变量)
-const baseURL = API_CONFIG.baseURL || '/api';
+const baseURL = '/api';
 
 const api = axios.create({
     baseURL: baseURL,

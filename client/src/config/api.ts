@@ -1,8 +1,6 @@
 // API 配置
 export const API_CONFIG = {
-  // 开发环境：使用相对路径，由 Vite 代理到后端
-  // 生产环境：需要配置完整的后端服务器 URL
-  baseURL: import.meta.env.VITE_API_BASE_URL || '',
+  baseURL: '',
   timeout: 10000,
   env: import.meta.env.VITE_NODE_ENV || 'development'
 }

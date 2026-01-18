@@ -1,39 +1,70 @@
-# Dependencies
+# ==================== 依赖包 ====================
 node_modules/
-bun.lockb
+*/node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
-# Build outputs
+# Bun依赖锁文件应该提交到版本控制以确保依赖一致性
+# bun.lockb 已从忽略列表中移除
+
+# ==================== 构建产物 ====================
 dist/
 build/
-*.tsbuildinfo
+*/dist/
+*/build/
+client/dist/
+server/dist/
 
-# Environment files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# ==================== 数据库文件 ====================
+*.db
+*.sqlite
+*.sqlite3
+server/database/*.db
+server/database/*.sqlite
+server/database/*.sqlite3
 
-# Logs
+# ==================== 文件上传 ====================
+uploads/
+server/uploads/
+client/uploads/
+*.tmp
+
+# ==================== 日志文件 ====================
 logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 lerna-debug.log*
+server/logs/
+client/logs/
 
-# Runtime data
-pids/
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
+# ==================== 测试和覆盖率 ====================
 coverage/
 *.lcov
+.nyc_output
+.jest/
+test-results/
+playwright-report/
+test-results.xml
 
-# OS generated files
+# ==================== IDE和编辑器 ====================
+.vscode/
+.idea/
+.codebuddy/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# ==================== 系统生成文件 ====================
 .DS_Store
 .DS_Store?
 ._*
@@ -41,39 +72,97 @@ coverage/
 .Trashes
 ehthumbs.db
 Thumbs.db
+Desktop.ini
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
 
-# Uploads (user files)
-uploads/
+# 保留 .env.example 用于模板
 
-# Database files
-*.db
-*.db-journal
-
-# Temporary files
+# ==================== 临时文件 ====================
+tmp/
+temp/
+.tmp/
+.temp/
 *.tmp
 *.temp
 
-# TypeScript
-*.tsbuildinfo
+# ==================== 缓存目录 ====================
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.vuepress/dist/
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+.npm
 
-# Frontend specific
-clinet/dist/
-clinet/node_modules/
-clinet/.env
-clinet/.env.local
-clinet/.env.development.local
-clinet/.env.test.local
-clinet/.env.production.local
-clinet/coverage/
+# ==================== 运行时数据 ====================
+pids
+*.pid
+*.seed
+*.pid.lock
 
+# ==================== 可选的缓存文件 ====================
+.eslintcache
+.stylelintcache
+.prettiercache
+.tsbuildinfo
 
-.claude
-.vercel
-.env*.local
+# ==================== 备份文件 ====================
+*.bak
+*.backup
+backup/
+backups/
+
+# ==================== PM2文件 ====================
+.pm2/
+ecosystem.config.js
+
+# ==================== Docker ====================
+.dockerignore
+Dockerfile.dev
+docker-compose.override.yml
+
+# ==================== 部署目录 ====================
+deploy/
+deployment/
+
+# ==================== 安全文件 ====================
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# ==================== 本地配置 ====================
+config/local.json
+config/development.json
+config/production.json
+
+# ==================== 生成的文档 ====================
+docs/generated/
+api-docs/
+
+# ==================== Storybook构建输出 ====================
+storybook-static
+
+# ==================== 可选的REPL历史 ====================
+.node_repl_history
+
+# ==================== npm打包输出 ====================
+*.tgz
+
+# ==================== Yarn完整性文件 ====================
+.yarn-integrity
+
+# ==================== VSCode测试版本 ====================
+.vscode-test
+
+server/.env
+
+*.canvas
+
+.env
+
+AGENTS.md
