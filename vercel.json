@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "bun run build:vercel",
-  "outputDirectory": "clinet/dist",
+  "buildCommand": "npm run build:vercel",
+  "installCommand": "npm install && cd clinet && npm install",
   "routes": [
     {
       "src": "/api/(.*)",
@@ -20,11 +20,8 @@
       "dest": "/dist/app.js"
     },
     {
-      "handle": "filesystem"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/dist/app.js"
     }
   ],
   "env": {

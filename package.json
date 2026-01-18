@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "bun --watch src/app.ts",
     "build": "bun build src/app.ts --outdir ./dist --target node",
-    "build:vercel": "bun run build && cd clinet && bun run build",
+    "build:npm": "tsc src/app.ts --outDir ./dist --module commonjs --target es2020 --moduleResolution node --esModuleInterop",
+    "build:vercel": "npm run build:npm && cd clinet && npm run build",
     "start": "bun dist/app.js",
+    "start:npm": "node dist/app.js",
     "reset-db": "bun run src/scripts/reset-database.ts",
-    "vercel-build": "bun run build:vercel"
+    "vercel-build": "npm run build:vercel"
   },
   "dependencies": {
     "@vercel/blob": "^0.23.4",

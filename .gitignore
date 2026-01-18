@@ -75,3 +75,5 @@ clinet/coverage/
 
 
 .claude
+.vercel
+.env*.local
