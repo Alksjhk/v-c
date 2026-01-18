@@ -34,13 +34,5 @@
   ],
   "env": {
     "NODE_ENV": "production"
-  },
-  "output": {
-    "exclude": [
-      "node_modules/**",
-      "src/**",
-      "clinet/src/**",
-      "clinet/node_modules/**"
-    ]
   }
 }
