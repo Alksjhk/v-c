@@ -1,0 +1,42 @@
+/* 加载屏幕样式 */
+.loading-screen {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: #fff;
+  font-size: 1.2rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+}
+
+/* 应用容器样式 */
+.app {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  padding: var(--space-4);
+  position: relative;
+  z-index: 0;
+}
+
+/* 响应式调整 */
+@media (max-width: 640px) {
+  .app {
+    padding: 0;
+    align-items: stretch;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app {
+    padding: var(--space-8);
+  }
+}

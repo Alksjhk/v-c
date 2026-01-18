@@ -1,0 +1,97 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.container {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.title {
+    color: #ff6b6b;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 12px 0;
+}
+
+.message {
+    color: #a0a0a0;
+    font-size: 0.95rem;
+    margin: 0 0 20px 0;
+    line-height: 1.5;
+}
+
+.countdown {
+    color: #e0e0e0;
+    font-size: 0.9rem;
+    margin: 0 0 24px 0;
+}
+
+.timer {
+    color: #10e8e8;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.button {
+    background: linear-gradient(135deg, #10e8e8 0%, #15dc47 100%);
+    color: #1a1a2e;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 32px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16, 232, 232, 0.3);
+}
+
+.button:active {
+    transform: translateY(0);
+}

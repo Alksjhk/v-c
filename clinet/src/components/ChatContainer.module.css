@@ -1,0 +1,48 @@
+/* 聊天容器样式 */
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--chat-max-width);
+  height: 100vh;
+  max-height: 800px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-2xl);
+  overflow: hidden;
+  animation: scaleIn 0.3s ease;
+}
+
+.main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 响应式 */
+@media (max-width: 640px) {
+  .container {
+    height: 100vh;
+    max-height: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-height: 85vh;
+  }
+}
